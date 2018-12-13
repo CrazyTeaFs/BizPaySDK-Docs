@@ -232,7 +232,7 @@ $client = new Bizpay([
 ]));
 ```
 
-- 使用通一下单
+- 使用统一下单
 
 ```php
 $data = $client->unifiedorder([
