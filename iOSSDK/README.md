@@ -15,7 +15,7 @@ BizPaySDK包含两个文件 **BizPaySDK.a** 和 **Header**
 ![](https://raw.githubusercontent.com/CrazyTeaFs/BizPaySDK-Docs/master/iOSSDK/2.png)
 
 #### 2.配置URL Types:
-在TARGETS  ->  Info  -> URL Types下添加一条新的URL Schemes. URL Schemes为**“BizPay + App Key”**，Identifier为 **“51BIZPAY”**。（注意：Identifier为写死成**“51BIZPAY”**）
+在TARGETS  ->  Info  -> URL Types下添加一条新的URL Schemes. URL Schemes为**“BizPay + App Key”** ，Identifier为 **“51BIZPAY”**。（注意：Identifier为写死成**“51BIZPAY”**）
 
 ![](https://raw.githubusercontent.com/CrazyTeaFs/BizPaySDK-Docs/master/iOSSDK/3.png)
 
