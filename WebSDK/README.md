@@ -6,6 +6,8 @@
 - [业务流程](#业务流程)
 - [接入点](#接入点)
 - [接口列表](#接口列表)
+- [签名算法](#签名算法)
+- [货币列表](#货币列表)
 - [场景](#场景)
 
 ## 文档说明
@@ -157,6 +159,7 @@ https://api.51bizpay.com
 ## 签名算法
 
 - 步骤1
+
 构造需要签名的数据为键值对数组，PHP代码如下：
 ```php
 $data = [
@@ -168,6 +171,7 @@ $data = [
 ```
 
 - 步骤2
+
 排序并构造为query字符串，按照`key`进行升序排序，并生成http_query，类似`app_id=10001&app_key=67fbdd4afb875caa2a3001fc021bbfa2&nonce=1001`，将`APPSecret`连接至最后，PHP代码如下：
 
 ```php
@@ -179,13 +183,14 @@ function buildQuery($data) {
     return implode($temp, '&');
 }
 ksort($data);
-$blank = buildQuery($data) . "&secret={$appsecret}";
+$query = buildQuery($data) . "&secret={$appsecret}";
 ```
 
 - 步骤3
+
 对query字符串进行hash运算并转换为大写字母，目前只支持`md5`算法。
 ```php
-$sign = strtoupper(md5($blank));
+$sign = strtoupper(md5($query));
 ```
 
 ### 签证签名
@@ -196,3 +201,17 @@ $sign = strtoupper(md5($blank));
 1、商户需要验证该通知数据中的out_trade_no是否为商户系统中创建的订单号；
 2、验证app_id是否为该商户本身设定值。
 上述1、2有任何一个验证不通过，则表明同步校验结果是无效的，只有全部验证通过后，才可以认定买家付款成功。
+
+
+## 货币列表
+
+目前BizPay支持以下货币
+
+|ID|货币名|符号|
+|:------|:------|:------|
+|1|比特币|BTC|
+|2|以太坊|ETH|
+|3|泰达币|USDT|
+|4|瑞波币|XRP|
+
+以后增加的货币类型，都会填写在这里。
