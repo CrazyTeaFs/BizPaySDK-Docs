@@ -156,8 +156,8 @@ https://api.51bizpay.com
 
 ## 签名算法
 
-### 步骤1
-构造需要签名的数据为`键值对数组`，PHP代码如下：
+- 步骤1
+构造需要签名的数据为键值对数组，PHP代码如下：
 ```php
 $data = [
 	'app_id' => $appid,
@@ -167,8 +167,7 @@ $data = [
 ];
 ```
 
-### 步骤2
-
+- 步骤2
 排序并构造为query字符串，按照`key`进行升序排序，并生成http_query，类似`app_id=10001&app_key=67fbdd4afb875caa2a3001fc021bbfa2&nonce=1001`，将`APPSecret`连接至最后，PHP代码如下：
 
 ```php
@@ -183,7 +182,7 @@ ksort($data);
 $blank = buildQuery($data) . "&secret={$appsecret}";
 ```
 
-### 步骤3
+- 步骤3
 对query字符串进行hash运算并转换为大写字母，目前只支持`md5`算法。
 ```php
 $sign = strtoupper(md5($blank));
