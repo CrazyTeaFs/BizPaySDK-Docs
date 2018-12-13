@@ -163,10 +163,10 @@ https://api.51bizpay.com
 构造需要签名的数据为键值对数组，PHP代码如下：
 ```php
 $data = [
-	'app_id' => $appid,
-	'app_key' => $appkey,
-	'nonce' => md5(microtime()),
-	'others' => '',
+    'app_id' => $appid,
+    'app_key' => $appkey,
+    'nonce' => md5(microtime()),
+    'others' => '',
 ];
 ```
 
@@ -215,3 +215,55 @@ $sign = strtoupper(md5($query));
 |4|瑞波币|XRP|
 
 以后增加的货币类型，都会填写在这里。
+
+## SDK
+
+目前我们提供了PHP调用参考，见本目录下的`Bizpay.php`，你需要修改命名空间和添加`GuzzleHttp`扩展。
+
+
+- 初始化
+
+```php
+$client = new Bizpay([
+    'appid' => '10001',
+    'appkey' => '46577c6a53c920909b89fc64cd8f82f7',
+    'appsecret' => '01829a123366ce210856897e9f9f635a',
+    'http' => ['base_uri' => 'https://api.51bizpay.com'],
+]));
+```
+
+- 使用通一下单
+
+```php
+$data = $client->unifiedorder([
+    'out_trade_no' => $order->number,
+    'remark' => '购买商品',
+    'amount' => $amount,
+    'currencies' => implode(array_column(Bizpay::$currencies, 'id'), ','),
+    'notify_url' => 'https://my.website/api/callback',
+    'type' => 'usd',
+]);
+if (!empty($data)) {
+    // SUCCESS
+}
+```
+
+- 使用快捷支付
+
+```php
+$data = $client->quickpay([
+    'authcode' => $authcode,
+    'out_trade_no' => $order->number,
+    'remark' => '购买商品',
+    'amount' => $amount,
+    'currencies' => 1, // 让用户支付比特币
+    'type' => 'usd',
+]);
+if (!empty($data)) {
+    // SUCCESS
+}
+```
+
+## 场景
+
+场景说明待添加
