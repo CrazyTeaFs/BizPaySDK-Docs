@@ -1,6 +1,6 @@
 # BizPaySDK-Docs
 
-目前支持的平台有：
+#### 目录
 
 - [Android](AndroidSDK)
 - [iOS](iOSSDK)
