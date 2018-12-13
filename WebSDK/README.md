@@ -54,7 +54,7 @@ https://api.51bizpay.com
 
 |参数名|变量名|必选|类型|说明|示列|
 |:------|:------|:---|:-----|-----|----|
-|开发者/系统服务商应用ID|app_id |是  |string |系统分配的APPID|`7`|
+|开发者应用ID|app_id |是  |string |系统分配的APPID|`10001`|
 |应用KEY|app_key |是  |string | 系统分配的APPKEY    |`67fbdd4afb875caa2a3001fc021bbfa2`|
 |随机字符串|nonce     |是  |string | 随机字符串，最长32字符    |`123`|
 |签名|sign     |是  |string | 签名字符串，参见[签名算法](#签名算法)|`7DAF1161A2B66087D511C3D6D1AB054A`|
@@ -73,12 +73,13 @@ https://api.51bizpay.com
 #### 返回结果
 
 当返回code为200时表示成功
+
 ```json
 {
     "code": 200,
     "msg": "ok",
     "data": {
-        "app_id": 1000,
+        "app_id": 10001,
         "app_key": "67fbdd4afb875caa2a3001fc021bbfa2",
         "nonce": "4ff6dcf23d1e9f84cd6ca7204d94d7f6",
         "prepay_id": "47aad51dd02f1cf689538866a81fcc677a3829c0",
@@ -102,3 +103,97 @@ https://api.51bizpay.com
 |500|订单未创建成功|
 
 返回其他错误，见msg提示。
+
+### 快捷支付API
+
+#### 请求URL
+
+- `/api/v1/pay/quickpay`
+
+#### 请求方式
+
+- `POST`
+
+#### 请求参数
+
+|参数名|变量名|必选|类型|说明|示列|
+|:------|:------|:---|:-----|-----|----|
+|开发者/系统服务商应用ID|app_id |是|string |系统分配的APPID|`10001`|
+|应用KEY|app_key |是|string | 系统分配的APPKEY    |`67fbdd4afb875caa2a3001fc021bbfa2`|
+|子商户ID|sub_app_id |否|string |如果设置了这个值，表示是系统服务商的子商户|`85`|
+|随机字符串|nonce|是  |string | 随机字符串，最长32字符    |`123`|
+|签名|sign|是|string | 签名字符串，参见[签名算法](#签名算法)|`7DAF1161A2B66087D511C3D6D1AB054A`|
+|商户订单号|out_trade_no|是|string |商户应用自身的订单号，每个APPID下唯一，最长32字符 |`1234567`|
+|备注|remark|是|string|备注，显示在支付框，最长128字符    |`商品`|
+|交易金额|amount|是|double|订单支付的货币数量|`0.003`|
+|交易方式|currencies|是|string|用户可选的交易货币，参见[货币列表](#货币列表)|`1,2,3`|
+|交易类型|type|是|string|amount的单位，可选值：`native`货币值、`usd`美元值|`native`|
+|通知地址|notify_url|否|string|**快捷支付可不设置此参数。**支付回调URL，不可带GET参数，参见 [成功回调数据](#的) |`https://api.my.me/v1/pay/callback`|
+|附加数据|attach|否|string|商户自定义数据，支付成功回调原样返回，最长128字符|`abcdef`|
+
+##### 说明
+
+- 在快捷支付下currencies只可指定一种。
+
+#### 返回结果
+
+当返回code为200时表示成功，且用户已扣款。
+
+```json
+{
+    "code": 200,
+    "msg": "ok",
+    "data": {
+        "app_id": 10001,
+        "app_key": "67fbdd4afb875caa2a3001fc021bbfa2",
+        "nonce": "4ff6dcf23d1e9f84cd6ca7204d94d7f6",
+        "prepay_id": "47aad51dd02f1cf689538866a81fcc677a3829c0",
+        "pay_url": "https://api.51bizpay.com/4Z3REW4R29",
+        "sign": "35EDA84089C41777CA1F6B41A143024D"
+    }
+}
+```
+
+## 签名算法
+
+### 步骤1
+构造需要签名的数据为`键值对数组`，PHP代码如下：
+```php
+$data = [
+	'app_id' => $appid,
+	'app_key' => $appkey,
+	'nonce' => md5(microtime()),
+	'others' => '',
+];
+```
+
+### 步骤2
+
+排序并构造为query字符串，按照`key`进行升序排序，并生成http_query，类似`app_id=10001&app_key=67fbdd4afb875caa2a3001fc021bbfa2&nonce=1001`，将`APPSecret`连接至最后，PHP代码如下：
+
+```php
+function buildQuery($data) {
+    $temp = [];
+    foreach ($data as $key => $value) {
+        $temp[] = "{$key}={$value}";
+    }
+    return implode($temp, '&');
+}
+ksort($data);
+$blank = buildQuery($data) . "&secret={$appsecret}";
+```
+
+### 步骤3
+对query字符串进行hash运算并转换为大写字母，目前只支持`md5`算法。
+```php
+$sign = strtoupper(md5($blank));
+```
+
+### 签证签名
+验证签名要进行签名，得到数组后，将`sign`字段取出来，并删除掉数组中的`sign`，再对这个数组进行签名，和取出来的`sign`一致，则正确。
+
+签名验证通过后，必须严格按照如下的描述校验通知参数的合法性：
+
+1、商户需要验证该通知数据中的out_trade_no是否为商户系统中创建的订单号；
+2、验证app_id是否为该商户本身设定值。
+上述1、2有任何一个验证不通过，则表明同步校验结果是无效的，只有全部验证通过后，才可以认定买家付款成功。
