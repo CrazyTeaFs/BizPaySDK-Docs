@@ -16,7 +16,7 @@
 
 步骤1：用户在【商户APP】中选择商品，提交订单，选择BizPay，并向【商户后端】提交数据。
 
-步骤2：【商户后端】收到用户支付单，生成本地订单，调用BizPay统一下单接口。参见【统一下单API】。
+步骤2：【商户后端】收到用户支付单，生成本地订单，调用BizPay统一下单接口。参见[统一下单API](#统一下单API)。
 
 步骤3：统一下单接口返回正常的prepay_id，再按签名规范重新生成签名后，将数据返回给【商户APP】。
 
@@ -57,19 +57,23 @@ https://api.51bizpay.com
 |开发者/系统服务商应用ID|app_id |是  |string |系统分配的APPID|`7`|
 |应用KEY|app_key |是  |string | 系统分配的APPKEY    |`67fbdd4afb875caa2a3001fc021bbfa2`|
 |随机字符串|nonce     |是  |string | 随机字符串，最长32字符    |`123`|
-|签名|sign     |是  |string | 签名字符串，参考 [签名算法](#签名算法)|`7DAF1161A2B66087D511C3D6D1AB054A`|
+|签名|sign     |是  |string | 签名字符串，参见[签名算法](#签名算法)|`7DAF1161A2B66087D511C3D6D1AB054A`|
 |商户订单号|out_trade_no     |是  |string |商户应用自身的订单号，每个APPID下唯一，最长32字符 |`1234567`|
 |备注|remark     |是  |string | 备注，显示在支付框，最长128字符    |`商品`|
 |交易金额|amount|是|double|订单支付的货币数量|`0.003`|
-|交易方式|currencies|是|string|支持的货币类型，参考[货币类型](http://)|`1,2,3`|
-|交易类型|type|是|string|交易类型，可选值：`native`货币值、`usd`法币美元|`native`|
+|交易方式|currencies|是|string|用户可选的交易货币，参见[货币列表](#货币列表)|`1,2,3`|
+|交易类型|type|是|string|amount的单位，可选值：`native`货币值、`usd`美元值|`native`|
 |通知地址|notify_url|是|string|支付回调URL，不可带GET参数，参见 [成功回调数据](#的) |`https://api.my.me/v1/pay/callback`|
 |附加数据|attach|否|string|商户自定义数据，支付成功回调原样返回，最长128字符|`abcdef`|
+
+##### 说明
+
+- type设置为usd表示amount的单位是美元，系统将自动让用户支付相应的货币数量
 
 #### 返回结果
 
 当返回code为200时表示成功
-```
+```json
 {
     "code": 200,
     "msg": "ok",
