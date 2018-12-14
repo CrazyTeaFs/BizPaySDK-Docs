@@ -21,7 +21,7 @@
 
 步骤2：【商户后端】收到用户支付单，生成本地订单，调用BizPay统一下单接口。参见[统一下单API](#统一下单API)。
 
-步骤3：统一下单接口返回正常的prepay_id，再按签名规范重新生成签名后，将数据返回给【商户APP】。
+步骤3：统一下单接口返回正常的prepay_id，将相关数据返回给【商户APP】。
 
 步骤4：【商户APP】调起微信支付。参见[安卓SDK](https://github.com/CrazyTeaFs/BizPaySDK-Docs/tree/master/AndroidSDK)、[iOS SDK](https://github.com/CrazyTeaFs/BizPaySDK-Docs/tree/master/iOSSDK)、
 
