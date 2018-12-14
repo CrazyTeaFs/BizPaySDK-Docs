@@ -66,7 +66,7 @@ https://api.51bizpay.com
 |交易金额|amount|是|double|订单支付的货币数量|`0.003`|
 |交易方式|currencies|是|string|用户可选的交易货币，参见[货币列表](#货币列表)|`1,2,3`|
 |交易类型|type|是|string|amount的单位，可选值：`native`货币值、`usd`美元值|`native`|
-|通知地址|notify_url|是|string|支付回调URL，不可带GET参数，参见 [成功回调数据](#的) |`https://api.my.me/v1/pay/callback`|
+|通知地址|notify_url|是|string|支付回调URL，不可带GET参数，参见 [成功回调数据](#成功回调数据) |`https://api.my.me/v1/pay/callback`|
 |附加数据|attach|否|string|商户自定义数据，支付成功回调原样返回，最长128字符|`abcdef`|
 
 ##### 说明
@@ -156,6 +156,28 @@ https://api.51bizpay.com
     }
 }
 ```
+
+## 成功回调数据
+
+用户支付成功后，系统会自动以POST方式请求notify_url，请保证请求能在60秒内完成。
+
+有事件发生时，将发出以下数据。首先，请验证签名是否有效。
+
+确认支付数据无误，请输出纯字符串success，表示该订单已完成支付。
+
+```json
+{
+  "app_id": "7",
+  "app_key": "67fbdd4afb875caa2a3001fc021bbfa2",
+  "out_trade_no": "100000000002",
+  "amount": "1.000000000000000000",
+  "status": "success",
+  "nonce": "881cb7ef01e0c021c78f491fdcc40c71",
+  "currency": "1",
+  "sign": "8B434B61028CE10043BA472B3E36EF58"
+}
+```
+> 以上数据以 form-data 获得。php 中用`$_POST`获取。
 
 ## 签名算法
 
