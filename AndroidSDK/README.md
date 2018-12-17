@@ -30,7 +30,7 @@ implementation name: 'BizPaySDK', ext: 'aar'
 
 ### 三．支付回调
 支付的信息会回调到开发者APP中的一个**Activity**中，该Activity需要实现**BizpayEventAPI**接口，并在对应的**manifest.xml**中申明该Activity。  
-申明要求示例如下：
+申明要求示例如下：  
 ![Image Url](https://raw.githubusercontent.com/CrazyTeaFs/BizPaySDK-Docs/master/AndroidSDK/3.png)   
 注：Activity的名字可以随意定义，但需要注意scheme字段为字符串"bizpay"直接拼接上开发者应用的app_key,否则回调将会失败。  
 代码：
