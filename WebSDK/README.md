@@ -124,6 +124,7 @@ https://api.51bizpay.com
 |开发者/系统服务商应用ID|app_id |是|string |系统分配的APPID|`10001`|
 |应用KEY|app_key |是|string | 系统分配的APPKEY    |`67fbdd4afb875caa2a3001fc021bbfa2`|
 |子商户ID|sub_app_id |否|string |如果设置了这个值，表示是系统服务商的子商户|`85`|
+|付款码|authcode|是|string|68开头的18到19位数字字符串，扫/输入用户付款码得到|`681234567890123456`|
 |随机字符串|nonce|是  |string | 随机字符串，最长32字符    |`123`|
 |签名|sign|是|string | 签名字符串，参见[签名算法](#签名算法)|`7DAF1161A2B66087D511C3D6D1AB054A`|
 |商户订单号|out_trade_no|是|string |商户应用自身的订单号，每个APPID下唯一，最长32字符 |`1234567`|
